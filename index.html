@@ -1575,16 +1575,12 @@
     /* ---------- controls ---------- */
     function buildSwitch() {
       /* ---- Multi-tenant tab visibility ----
-         __ASSO__ role → sees all tabs (All Parks + every park)
-         Park role     → sees only "All Parks" (benchmark) + their own park tab
+         __ASSO__ role → sees only "All Parks" (benchmark)
+         Park role     → sees "All Parks" (benchmark) + their own park tab
       */
-      let items;
-      if (state.userRole === "__ASSO__") {
-        items = [["__ASSO__", "All Parks (benchmark)"], ...PARKS.map(p => [p, p])];
-      } else {
-        // single-park user: All Parks aggregate + own park
-        items = [["__ASSO__", "All Parks (benchmark)"]];
-        if (PARKS.includes(state.userRole)) items.push([state.userRole, state.userRole]);
+      let items = [["__ASSO__", "All Parks (benchmark)"]];
+      if (state.userRole !== "__ASSO__" && PARKS.includes(state.userRole)) {
+        items.push([state.userRole, state.userRole]);
       }
       $("#switch").innerHTML = items.map(([v, l]) => `<button class="pill${v === state.view ? " active" : ""}" data-v="${v}">${l}</button>`).join("");
       $("#switch").querySelectorAll(".pill").forEach(b => b.onclick = () => { state.view = b.dataset.v; renderAll(); });
